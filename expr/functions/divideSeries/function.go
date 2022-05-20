@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-graphite/carbonapi/expr/helper"
 	"github.com/go-graphite/carbonapi/expr/interfaces"
+	"github.com/go-graphite/carbonapi/expr/metadata"
 	"github.com/go-graphite/carbonapi/expr/types"
 	"github.com/go-graphite/carbonapi/pkg/parser"
 )
@@ -53,7 +54,11 @@ func (f *divideSeries) Do(ctx context.Context, e parser.Expr, from, until int64,
 			return nil, err
 		}
 		if len(denominators) != 1 {
-			return nil, types.ErrWildcardNotAllowed
+			e.SetTarget("divideSeriesLists")
+			metadata.FunctionMD.RLock()
+			f2, _ := metadata.FunctionMD.Functions[e.Target()]
+			metadata.FunctionMD.RUnlock()
+			return f2.Do(ctx, e, from, until, values)
 		}
 
 		denominator = denominators[0]
