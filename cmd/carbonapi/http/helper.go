@@ -2,6 +2,7 @@ package http
 
 import (
 	"fmt"
+	"math/bits"
 	"net/http"
 	"strings"
 	"sync/atomic"
@@ -197,8 +198,9 @@ func bucketRequestTimes(req *http.Request, t time.Duration) {
 	logger := zapwriter.Logger("slow")
 
 	ms := t.Nanoseconds() / int64(time.Millisecond)
+	ApiMetrics.RequestTime.Add(ms)
 
-	bucket := int(ms / 100)
+	bucket := bits.Len64(uint64(ms/10))
 
 	if bucket < config.Config.Upstreams.Buckets {
 		atomic.AddInt64(&TimeBuckets[bucket], 1)

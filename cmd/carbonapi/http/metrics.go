@@ -13,6 +13,7 @@ import (
 
 var ApiMetrics = struct {
 	Requests              *expvar.Int
+	RequestTime           *expvar.Int
 	RenderRequests        *expvar.Int
 	RequestCacheHits      *expvar.Int
 	RequestCacheMisses    *expvar.Int
@@ -29,6 +30,7 @@ var ApiMetrics = struct {
 	CacheItems expvar.Func
 }{
 	Requests: expvar.NewInt("requests"),
+	RequestTime:           expvar.NewInt("request_time_ms"),
 	// TODO: request_cache -> render_cache
 	RenderRequests:        expvar.NewInt("render_requests"),
 	RequestCacheHits:      expvar.NewInt("request_cache_hits"),
